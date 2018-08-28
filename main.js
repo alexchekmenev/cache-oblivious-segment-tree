@@ -1,32 +1,40 @@
 const cache = require('./cache');
 const segmentTree = require('./segment-tree');
 const storage = require('./storage');
-const {nearestPowerOfTwoGTE, nearestPowerOfTwoLTE} = require('./utils');
 
 //TODO: get from ENV
-const N = 1 << 25;
+const N = 1 << 20;
 const T = 1000;
+const B = 1 << 22;
+let Mmin = 1 << 22; // 1 Mb;
+let Mmax = 1 << 27; // 1 Mb;
 
-// const B = (N * 2 - 1) * 4; // 1 Kb;
-// const M = 10 * B; // 1 Mb;
+function tester() {
+    let m = Mmax;
+    for(; m >= Mmin; m /= 2) {
+        fromScratch(m, N);
+    }
+}
 
-const B = 8192; // 1 Kb;
-let M = 1e21; // 1 Mb;
+tester();
+
 
 function fromScratch(M, n) {
-    console.log('B=' + B + ', M=' + M);
+    console.log('B=' + B + ', M=2^' + Math.log2(M));
     const start = new Date();
 
-    const N = nearestPowerOfTwoGTE(n);
-    storage.init(2 * N - 1, B);
+    // const blocksCount = segmentTree.getBlocksCount(n, B);
+    // console.log('blocksCount', blocksCount);
+
+    storage.init(B, n);
     storage.createBlocks();
     console.log(storage.getBlocksCount() + ' blocks created');
 
     cache.init(M, storage);
 
-    const values = segmentTree.generateArray(n, 1, 1); //storage.generateArray(n, 1, 10);
+    const values = segmentTree.generateArray(n, 1, 1);
     segmentTree.init(cache, values);
-    // cache.syncAll();
+    cache.syncAll();
     console.log('build: ' + ((new Date()) - start) + ' ms.' );
 
     test(n, T, cache);
@@ -50,12 +58,15 @@ function test(N, T, cache) {
 
     const start = new Date();
     for(let i = 0; i < T; i++) {
-        const res = segmentTree.query(N, qs[i], cache);
+        // console.log('query', qs[i].l, qs[i].r);
+        const res = segmentTree.query(qs[i]);
         // console.log(qs[i].l, qs[i].r, 'sum = ' + res);
         if (qs[i].r - qs[i].l + 1 !== res) {
+            // console.log(qs[i].l, qs[i].r, 'sum = ' + res, qs[i].r - qs[i].l + 1);
             throw new Error('wrong sum');
             // console.log('ERR');
         }
+        // console.log('\n\n\n')
     }
     console.log('test: ' + (((new Date()) - start) / T).toFixed(2) + ' ms. per test\n' );
 }
@@ -63,14 +74,3 @@ function test(N, T, cache) {
 function genRandomInRange(l, r) {
     return l + (Math.random() * (r - l + 1))|0;
 }
-
-// fromScratch(N);
-
-function tester() {
-    let m = 1 << 15;
-    for(; m <= (1 << 21); m *= 2) {
-        fromScratch(m, N);
-    }
-}
-
-tester();
