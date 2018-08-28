@@ -1,9 +1,18 @@
-let _storage;
-let totalBlocksCount = 0;
+"use strict";
 
+let _storage;
 let queue = []; // array of ints
+let totalBlocksCount = 0;
 let loadedBlocks = []; // object of Uint32Array
 let loadedBlocksCount = 0;
+
+module.exports = {
+    init,
+    syncAll,
+    get,
+    set,
+    getBlockSize
+};
 
 function init(M, storage) {
     if (storage.getBlockSize() > M){
@@ -17,12 +26,10 @@ function init(M, storage) {
  * Synchronous
  */
 function load(blockId) {
-    // console.log('queue', queue);
     if (!loadedBlocks.hasOwnProperty(blockId)) {
         if (loadedBlocksCount + 1 > totalBlocksCount) {
             sync();
         }
-        // console.log('load block#' + blockId);
         queue.push(blockId);
         loadedBlocksCount++;
         loadedBlocks[blockId] = _storage.readBlock(blockId);
@@ -36,7 +43,6 @@ function load(blockId) {
 function sync() {
     if (queue.length > 0) {
         const blockId = queue.shift();
-        // console.log('sync block#' + blockId);
         loadedBlocksCount--;
         _storage.writeBlock(blockId, loadedBlocks[blockId]);
         delete loadedBlocks[blockId];
@@ -64,20 +70,10 @@ function get(blockId, offset) {
  * Synchronous
  */
 function set(blockId, offset, value) {
-    // console.log('set: blockId=' + blockId + ', offset =' + offset);
     const block = load(blockId);
-    // console.log(block);
     block[offset] = value;
 }
 
 function getBlockSize() {
     return _storage.getBlockSize();
 }
-
-module.exports = {
-    init,
-    syncAll,
-    get,
-    set,
-    getBlockSize
-};

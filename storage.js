@@ -1,36 +1,28 @@
+"use strict";
+
 const fs = require('fs');
-const Q = require('q');
 const path = require('path');
 const BLOCKS = path.join(process.cwd(), '../blocks');
 const {nearestPowerOfTwoGTE, nearestPowerOfTwoLTE} = require('./utils');
 
-// let length = 0;
-let _blockSize = 0;
-let _blocksCount = 0;
-
+let blockSize = 0;
+let blocksCount = 0;
 let readBlockCount = 0;
 
 module.exports = {
     init: (B, n) => {
-        // length = N;
-        _blockSize = B;
-        // console.log('N = ' + N);
-        // _blocksCount = blocksCount;
+        blockSize = B;
         const N = nearestPowerOfTwoGTE(n);
         const count_in_block = nearestPowerOfTwoLTE(((B + 2 * 4 - 1) / 4)|0) - 1;
-        console.log('storage: count_in_block', count_in_block);
-        _blocksCount = ((2 * N - 1 + count_in_block - 1) / count_in_block)|0;
+        blocksCount = ((2 * N - 1 + count_in_block - 1) / count_in_block)|0;
     },
     getBlockSize: () => {
-        return _blockSize;
+        return blockSize;
     },
     getBlocksCount: () => {
-        return _blocksCount;
+        return blocksCount;
     },
     readBlock: (blockId) => {
-        if (readBlockCount % 10000 === 0) {
-            console.log('readBlockCount', readBlockCount);
-        }
         readBlockCount++;
         const filePath = path.join(BLOCKS, 'block-'+blockId);
         const buffer = fs.readFileSync(filePath);
@@ -42,14 +34,13 @@ module.exports = {
         fs.writeFileSync(filePath, buffer);
     },
     createBlocks: () => {
-        // console.log('creating blocks...');
-        for(let i = 0; i < _blocksCount; i++) {
-            fillZeroes(i, _blockSize / 4);
+        for(let i = 0; i < blocksCount; i++) {
+            fillZeroes(i, blockSize / 4);
         }
     },
     removeBlocks: () => {
         readBlockCount = 0;
-        for(let blockId = 0; blockId < _blocksCount; blockId++) {
+        for(let blockId = 0; blockId < blocksCount; blockId++) {
             fs.unlinkSync(path.join(BLOCKS, 'block-'+blockId));
         }
     }
