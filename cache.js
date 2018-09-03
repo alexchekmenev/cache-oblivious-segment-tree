@@ -20,6 +20,10 @@ function init(M, storage) {
     }
     _storage = storage;
     totalBlocksCount = (M / storage.getBlockSize())|0;
+    queue = [];
+    loadedBlocks = [];
+    loadedBlocksCount = 0;
+    console.log(totalBlocksCount + ' blocks could be in cache');
 }
 
 /**

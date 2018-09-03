@@ -2,9 +2,9 @@
 
 const fs = require('fs');
 const path = require('path');
-const BLOCKS = path.join(process.cwd(), '../blocks');
 const {nearestPowerOfTwoGTE, nearestPowerOfTwoLTE} = require('./utils');
 
+let BLOCKS;
 let blockSize = 0;
 let blocksCount = 0;
 let readBlockCount = 0;
@@ -15,6 +15,10 @@ module.exports = {
         const N = nearestPowerOfTwoGTE(n);
         const count_in_block = nearestPowerOfTwoLTE(((B + 2 * 4 - 1) / 4)|0) - 1;
         blocksCount = ((2 * N - 1 + count_in_block - 1) / count_in_block)|0;
+        readBlockCount = 0;
+        BLOCKS = path.join(process.cwd(), '../blocks', 't-' + (+new Date()));
+        // console.log('BLOCKS', BLOCKS);
+        fs.mkdirSync(BLOCKS);
     },
     getBlockSize: () => {
         return blockSize;
@@ -24,6 +28,9 @@ module.exports = {
     },
     readBlock: (blockId) => {
         readBlockCount++;
+        if (readBlockCount % 10000 === 0 && readBlockCount > 0) {
+            console.log('readBlockCount', readBlockCount);
+        }
         const filePath = path.join(BLOCKS, 'block-'+blockId);
         const buffer = fs.readFileSync(filePath);
         return new Uint32Array(toArrayBuffer(buffer));
