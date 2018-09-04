@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const RESULTS_PATH = path.join(process.cwd(), 'results.json');
+const RESULTS_PATH = path.join(process.cwd(), 'results/results.json');
 
 module.exports = {
     load,

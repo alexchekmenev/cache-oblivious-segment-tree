@@ -19,6 +19,12 @@ core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
 
+csv-stringify@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/csv-stringify/-/csv-stringify-4.0.1.tgz#2cb3be20c7ca52e6cf8b8104e6d9faf79e3facf5"
+  dependencies:
+    lodash.get "~4.4.2"
+
 inherits@2.0.3, inherits@^2.0.3, inherits@~2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
@@ -26,6 +32,10 @@ inherits@2.0.3, inherits@^2.0.3, inherits@~2.0.3:
 isarray@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/isarray/-/isarray-1.0.0.tgz#bb935d48582cba168c06834957a54a3e07124f11"
+
+lodash.get@~4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
 
 path@^0.12.7:
   version "0.12.7"

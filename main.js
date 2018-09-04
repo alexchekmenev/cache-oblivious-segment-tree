@@ -3,24 +3,11 @@
 const storage = require('./storage');
 const cache = require('./cache');
 const segmentTree = require('./segment-tree');
-const {load, save} = require('./results-saver');
+const {load, save} = require('./results/results-saver');
 
 const T = 1000;
 
-// TODO: get from ENV
-// const N = 1 << 23;
-// const B = 1 << 13;
-// let Mmin = 1 << 22; // 1 Mb;
-// let Mmax = 1 << 28; // 1 Mb;
-
-// function tester() {
-//     let m = Mmax;
-//     for(; m >= Mmin; m /= 2) {
-//         fromScratch(B, m, N);
-//     }
-// }
-
-function a() {
+function tester() {
     let cnt = 0;
     const total = 378;
     const results = load();
@@ -41,7 +28,7 @@ function a() {
                         test: 0
                     });
                 } else {
-                    const times = fromScratch(1 << b, 1 << m, 1 << n);
+                    const times = iter(1 << b, 1 << m, 1 << n);
                     results.data.push({
                         n,
                         m,
@@ -56,10 +43,13 @@ function a() {
         }
     }
 }
-a();
+// tester();
+const N = 1 << 21;
+const M = 1 << 20;
+const B = Math.sqrt(M / 2)|0;
+iter(1 << 10, M, N);
 
-
-function fromScratch(B, M, n) {
+function iter(B, M, n) {
     console.log(`B = 2^${Math.log2(B)}, M = 2^${Math.log2(M)}`);
     const start = new Date();
 
